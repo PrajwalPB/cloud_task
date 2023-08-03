@@ -1,0 +1,32 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('starting pipeline') {
+            steps {
+                echo 'pipeline started'
+            }
+        }
+		stage('get files') {
+            steps {
+			    git 'https://github.com/Pritam-Khergade/onlinebookstore.git'
+            }
+        }
+		stage('get maven & build') {
+            steps {
+			    sh '''sudo yum install maven -y
+                sudo mvn clean package'''
+            }
+        }
+		stage('copy to s3') {
+            steps {
+			    sh 'aws s3 cp target/onlinebookstore.war  s3://jenkins-balti/onlinebookstore${BUILD_NUMBER}.war'
+            }
+        }
+        stage('trigger child job') {
+            steps {
+                build 'child_pipeline'
+            }
+        }
+    }
+}

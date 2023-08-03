@@ -1,0 +1,43 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('starting pipeline') {
+            steps {
+                echo 'pipeline started'
+            }
+        }
+		stage('get files') {
+            steps {
+			    git 'https://github.com/Pritam-Khergade/onlinebookstore.git'
+            }
+        }
+		stage('get maven & build') {
+            steps {
+			    sh '''sudo yum install maven -y
+                sudo mvn clean package'''
+            }
+        }
+		stage('copy to s3') {
+            steps {
+			    sh 'aws s3 cp target/onlinebookstore.war  s3://jenkins-balti/onlinebookstore${BUILD_NUMBER}.war'
+            }
+        }
+        stage('conect to node') {
+            steps {
+			    withCredentials([sshUserPrivateKey(credentialsId: 'a69f2245-8a34-4565-bc9f-acda095c9226', keyFileVariable: 'mykey', usernameVariable: 'ec2-user')]) {
+   sh''' ssh -i ${mykey} -T -o StrictHostKeyChecking=no ec2-user@18.233.171.113 <<EOF
+                sudo dnf install java-11-amazon-corretto -y
+                wget https://dlcdn.apache.org/tomcat/tomcat-8/v8.5.91/bin/apache-tomcat-8.5.91.zip
+                sudo unzip apache-tomcat-8.5.91.zip
+                sudo mv apache-tomcat-8.5.91 /mnt/tomcat
+                sudo aws s3 cp s3://fdecb2-artifact/onlinebookstore${BUILD_NUMBER}.war /mnt/tomcat/webapps/onlinebookstore.war
+                cd /mnt/tomcat
+                sudo chmod 0755 /mnt/tomcat/bin/*
+                sudo ./bin/catalina.sh start
+
+                  '''
+            }
+        }
+    }
+}

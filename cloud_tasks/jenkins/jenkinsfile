@@ -1,0 +1,31 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Hello') {
+            steps {
+                echo 'Hello World'
+            }
+        }
+		stage('get files') {
+            steps {
+			    git 'https://github.com/Pritam-Khergade/onlinebookstore.git'
+            }
+        }
+		stage('get maven') {
+            steps {
+			    sh 'sudo yum install maven -y'
+            }
+        }
+		stage('build pkg') {
+            steps {
+			    sh 'sudo mvn clean package'
+            }
+        }
+		stage('copy to s3') {
+            steps {
+			    sh 'aws s3 cp target/onlinebookstore.war  s3://bucketofjenkins/'
+            }
+        }
+    }
+}

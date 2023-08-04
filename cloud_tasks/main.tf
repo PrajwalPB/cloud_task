@@ -84,8 +84,7 @@ sudo mv apache-tomcat-8.5.91 /mnt/tomcat
 KEY=`aws s3 ls $BUCKET --recursive | sort | tail -n 1 | awk '{print $4}'`
 aws s3 cp s3://$BUCKET/$KEY /mnt/tomcat/webapps/
 sudo chmod 0755 /mnt/tomcat/bin/*
-sudo cd /mnt/tomcat/bin/
-sudo ./catalina.sh start
+sudo /mnt/tomcat/bin/catalina.sh start
 EOF
 
   tags = {

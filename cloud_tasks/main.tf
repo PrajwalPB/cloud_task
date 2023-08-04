@@ -94,26 +94,20 @@ resource "aws_instance" "prajwal_task" {
 resource "aws_security_group" "allow_tls" {
   name        = "demoallow_tls"
   description = "Allow TLS inbound traffic"
-
-  ingress = [
-    {
-
-      description      = "TLS from VPC"
-      from_port        = 22
-      to_port          = 22
-      protocol         = "tcp"
-      cidr_blocks      = ["0.0.0.0/0"]
-    },
-    {
-      description      = "TLS from VPC"
-      from_port        = 8080
-      to_port          = 8080
-      protocol         = "tcp"
-      cidr_blocks      = ["0.0.0.0/0"]
-
-
-    }
-  ]
+  ingress {
+    description      = "TLS from VPC"
+    from_port        = 22
+    to_port          = 22
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+  }
+  ingress {
+    description      = "TLS1 from VPC"
+    from_port        = 8080
+    to_port          = 8080
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+  }
 
   egress {
     from_port        = 0

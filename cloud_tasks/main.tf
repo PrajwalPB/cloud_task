@@ -74,7 +74,7 @@ resource "aws_instance" "prajwal_task" {
    key_name = "pbsinga"
    iam_instance_profile = aws_iam_instance_profile.profile.name
    vpc_security_group_ids = [aws_security_group.allow_tls.id]
-   ser_data = <<EOF
+   user_data = <<EOF
                #!/bin/bash
                BUCKET=my-s3-bucket-prajwal
                sudo dnf install java-11-amazon-corretto -y

@@ -13,7 +13,7 @@ variable role_name {
 variable instance_size {
     type = string
     description = "ec2 web server size"
-    default = "t3.small"
+    default = "t3.micro"
 }
 variable Name {
   type = string

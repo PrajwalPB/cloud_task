@@ -72,6 +72,8 @@ resource "aws_instance" "prajwal_task" {
   ami           = var.instance_ami
   instance_type = var.instance_size
    key_name = "pbsinga"
+   iam_instance_profile = aws_iam_instance_profile.profile.name
+   vpc_security_group_ids = [aws_security_group.allow_tls.id]
    user_data = <<EOF
    #!/bin/bash
    BUCKET=my-s3-bucket-prajwal

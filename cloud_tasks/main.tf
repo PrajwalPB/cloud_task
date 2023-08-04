@@ -84,6 +84,7 @@ resource "aws_instance" "prajwal_task" {
                KEY=`aws s3 ls $BUCKET --recursive | sort | tail -n 1 | awk '{print $4}'`
                aws s3 cp s3://$BUCKET/$KEY /mnt/tomcat/webapps/
                sudo chmod 0755 /mnt/tomcat/bin/*
+               sudo cd /mnt/tomcat/
                sudo ./bin/catalina.sh start
                EOF
 
